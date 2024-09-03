@@ -1,0 +1,22 @@
+{
+  "title": "Job read-all does not become a sibling's default",
+  "workflow": [
+    "on: push",
+    "jobs:",
+    "  inspect: {permissions: read-all}",
+    "  prepare: {runs-on: ubuntu-latest}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT"]
+    }
+  },
+  "exit_code": 0
+}
