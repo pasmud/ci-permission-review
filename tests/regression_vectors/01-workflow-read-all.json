@@ -1,0 +1,18 @@
+{
+  "title": "Workflow read-all stays an unexpanded shorthand",
+  "workflow": [
+    "on: pull_request",
+    "permissions: read-all",
+    "jobs:",
+    "  inspect:",
+    "    runs-on: ubuntu-latest"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "workflow", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}

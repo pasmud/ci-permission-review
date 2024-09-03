@@ -66,4 +66,18 @@ ruff check .
 ruff format --check .
 ```
 
+### Permission regression vectors
+
+The synthetic workflows in `tests/regression_vectors/` cover permission inheritance
+and replacement, unset defaults, read-only and limited-write declarations, broad
+write thresholds, and unknown caller and callee context. Each vector specifies the
+expected report by job and the CLI exit status. Limited-write examples assume the
+named scopes are approved for that job; a clean report does not establish approval.
+The tests read local YAML without running workflows and can run with any nonempty
+subset of the vectors.
+
+```sh
+python -m pytest tests/test_regression_vectors.py
+```
+
 See [LICENSE](LICENSE) for the MIT license.
