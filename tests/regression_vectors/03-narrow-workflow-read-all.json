@@ -1,0 +1,23 @@
+{
+  "title": "A job limits inherited reads to repository contents",
+  "workflow": [
+    "on: pull_request",
+    "permissions: read-all",
+    "jobs:",
+    "  inventory: {}",
+    "  index: {permissions: {contents: read}}"
+  ],
+  "expected": {
+    "index": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read"}},
+      "findings": [],
+      "notes": []
+    },
+    "inventory": {
+      "permissions": {"source": "workflow", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
