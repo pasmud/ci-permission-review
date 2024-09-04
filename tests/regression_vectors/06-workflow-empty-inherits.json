@@ -1,0 +1,23 @@
+{
+  "title": "Workflow deny-all is explicit for each inheriting job",
+  "workflow": [
+    "on: push",
+    "permissions: {}",
+    "jobs:",
+    "  format: {}",
+    "  prepare: {}"
+  ],
+  "expected": {
+    "format": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "prepare": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
