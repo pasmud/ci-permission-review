@@ -1,0 +1,16 @@
+{
+  "title": "An empty job map revokes the workflow's read-all",
+  "workflow": [
+    "permissions: read-all",
+    "jobs:",
+    "  format: {permissions: {}}"
+  ],
+  "expected": {
+    "format": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
