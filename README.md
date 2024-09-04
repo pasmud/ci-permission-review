@@ -26,7 +26,14 @@ In an explicit map, unlisted configurable scopes are `none`; `{}` therefore gran
 | --- | --- |
 | `WRITE_ALL` | The resolved declaration for the job is `write-all`. |
 | `BROAD_WRITE` | An explicit map declares `write` on at least three scopes. This is a review heuristic, not a verdict that the job is unsafe. |
-| `REUSABLE_WORKFLOW` | With `--notes`, a job has a non-empty job-level `uses`. The note points to the caller's YAML field. The callee's permissions are outside this review. |
+
+With `--notes`, the report also explains permission context that the local file cannot establish:
+
+| Note | When it appears |
+| --- | --- |
+| `PLATFORM_DEFAULT` | Neither the workflow nor the job declares permissions. The configured default is unknown. |
+| `CALLER_CONTEXT` | The workflow declares `on: workflow_call`, alone or alongside other triggers. When the workflow is called, the caller limits the token permissions; its permission ceiling is unknown. |
+| `REUSABLE_WORKFLOW` | A job has a non-empty job-level `uses`. The note points to the caller's YAML field; the callee's permissions are unknown. |
 
 `read-all`, fewer than three explicit writes, and unspecified defaults produce no findings. Review these separately if your policy requires explicit permissions or prohibits individual scopes.
 

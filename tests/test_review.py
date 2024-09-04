@@ -1,3 +1,5 @@
+import pytest
+
 from ci_permission_review.review import review_workflow
 from ci_permission_review.workflow import load_workflow
 
@@ -39,16 +41,39 @@ def test_reusable_notes_do_not_follow_or_echo_references_or_flag_step_actions():
           other_call:
             uses: fake-org/fake-repo/.github/workflows/fake-example.yml@fake-ref
           sample_step:
+            permissions: {}
             steps:
               - uses: fake-org/fake-action@fake-ref
     """)
     assert all(not job.notes for job in review_workflow(workflow))
     results = review_workflow(workflow, include_notes=True)
     assert all(not job.findings for job in results)
+    assert [note.code for note in results[0].notes] == [
+        "PLATFORM_DEFAULT",
+        "REUSABLE_WORKFLOW",
+    ]
+    assert "unknown" in results[0].notes[0].message
+    assert [note.code for note in results[1].notes] == ["REUSABLE_WORKFLOW"]
     for job in results[:2]:
-        (note,) = job.notes
-        assert note.code == "REUSABLE_WORKFLOW"
+        note = job.notes[-1]
         assert f"jobs.{job.job_id}.uses" in note.message
         assert "caller" in note.message
+        assert "callee's permissions are unknown" in note.message
         assert "fake-" not in note.message
     assert not results[2].notes
+
+
+@pytest.mark.parametrize(
+    "triggers", ["workflow_call", "[workflow_call, push]", "{workflow_call: null}"]
+)
+def test_callable_workflow_explains_caller_ceiling_for_explicit_permissions(triggers):
+    workflow = load_workflow(
+        f"on: {triggers}\npermissions: {{contents: read}}\njobs: {{sample: {{}}}}"
+    )
+    (job,) = review_workflow(workflow, include_notes=True)
+    assert job.permissions.scopes == (("contents", "read"),)
+    assert not job.findings
+    (note,) = job.notes
+    assert note.code == "CALLER_CONTEXT"
+    assert "When invoked via workflow_call" in note.message
+    assert "ceiling is unknown" in note.message

@@ -53,6 +53,8 @@ def test_json_preserves_path_order_and_distinguishes_modes(tmp_path):
         "mode": "default",
         "scopes": {},
     }
+    assert not platform["findings"]
+    assert [note["code"] for note in platform["notes"]] == ["PLATFORM_DEFAULT"]
     (caller,) = report["workflows"][1]["jobs"]
     assert caller["job_id"] == "caller"
     assert caller["permissions"]["scopes"] == dict.fromkeys(
@@ -119,6 +121,14 @@ def test_documented_fixtures_have_expected_policy_results():
     assert defaults.returncode == 0
     assert "sample_default: permissions (platform-default):" in defaults.stdout
     assert "sample_empty: permissions (job): {}" in defaults.stdout
+    assert "note PLATFORM_DEFAULT" not in defaults.stdout
+
+    with_notes = run_cli(
+        "--fail-on-findings", "--notes", examples / "fake-defaults.yml"
+    )
+    assert with_notes.returncode == 0
+    assert "sample_default: note PLATFORM_DEFAULT:" in with_notes.stdout
+    assert "sample_empty: note" not in with_notes.stdout
 
     flags = run_cli(
         "--format",

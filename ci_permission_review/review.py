@@ -44,26 +44,60 @@ def _findings(permissions: Permissions) -> tuple[Finding, ...]:
     return ()
 
 
-def _reusable_notes(job_id: str, job: dict) -> tuple[EvidenceNote, ...]:
+def _has_workflow_call(workflow: dict) -> bool:
+    triggers = workflow.get("on")
+    if isinstance(triggers, str):
+        return triggers == "workflow_call"
+    return isinstance(triggers, (list, dict)) and "workflow_call" in triggers
+
+
+def _context_notes(
+    job_id: str, job: dict, permissions: Permissions, *, accepts_calls: bool
+) -> tuple[EvidenceNote, ...]:
+    notes = []
+    if permissions.mode == "default":
+        notes.append(
+            EvidenceNote(
+                "PLATFORM_DEFAULT",
+                "Neither the workflow nor the job declares permissions; the configured "
+                "platform default is unknown to this local review.",
+            )
+        )
+    if accepts_calls:
+        notes.append(
+            EvidenceNote(
+                "CALLER_CONTEXT",
+                "When invoked via workflow_call, the caller limits token permissions; "
+                "the caller's permission ceiling is unknown to this local review.",
+            )
+        )
     reference = job.get("uses")
-    if not isinstance(reference, str) or not reference.strip():
-        return ()
-    return (
-        EvidenceNote(
-            "REUSABLE_WORKFLOW",
-            f"jobs.{job_id}.uses declares a reusable workflow call; this review covers "
-            "the caller's permission declaration only. Review the referenced workflow separately.",
-        ),
-    )
+    if isinstance(reference, str) and reference.strip():
+        notes.append(
+            EvidenceNote(
+                "REUSABLE_WORKFLOW",
+                f"jobs.{job_id}.uses declares a reusable workflow call; only the caller's "
+                "declaration was reviewed. The callee's permissions are unknown.",
+            )
+        )
+    return tuple(notes)
 
 
 def review_workflow(
     workflow: dict, *, include_notes: bool = False
 ) -> tuple[JobReview, ...]:
     results = []
+    accepts_calls = include_notes and _has_workflow_call(workflow)
     for job_id, permissions in resolve_permissions(workflow).items():
         notes = (
-            _reusable_notes(job_id, workflow["jobs"][job_id]) if include_notes else ()
+            _context_notes(
+                job_id,
+                workflow["jobs"][job_id],
+                permissions,
+                accepts_calls=accepts_calls,
+            )
+            if include_notes
+            else ()
         )
         results.append(JobReview(job_id, permissions, _findings(permissions), notes))
     return tuple(results)

@@ -46,7 +46,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("paths", metavar="WORKFLOW", nargs="+")
     parser.add_argument(
-        "--notes", action="store_true", help="include reusable-job evidence"
+        "--notes", action="store_true", help="explain unknown permission context"
     )
     parser.add_argument(
         "--format",
