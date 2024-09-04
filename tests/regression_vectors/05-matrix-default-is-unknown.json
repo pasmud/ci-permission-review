@@ -1,0 +1,24 @@
+{
+  "title": "Matrix and shell defaults leave token permissions unknown",
+  "workflow": [
+    "on: push",
+    "defaults:",
+    "  run: {shell: bash}",
+    "jobs:",
+    "  test:",
+    "    runs-on: ubuntu-latest",
+    "    strategy:",
+    "      matrix: {python: ['3.11', '3.14']}"
+  ],
+  "expected": {
+    "test": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT"]
+    }
+  },
+  "note_contains": {
+    "test": {"PLATFORM_DEFAULT": ["platform default is unknown"]}
+  },
+  "exit_code": 0
+}
