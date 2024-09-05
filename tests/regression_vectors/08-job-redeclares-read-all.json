@@ -1,0 +1,22 @@
+{
+  "title": "Identical read-all declarations still have distinct sources",
+  "workflow": [
+    "permissions: read-all",
+    "jobs:",
+    "  inherited: {}",
+    "  pinned: {permissions: 'read-all'}"
+  ],
+  "expected": {
+    "inherited": {
+      "permissions": {"source": "workflow", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "pinned": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
