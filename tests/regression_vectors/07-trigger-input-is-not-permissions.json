@@ -1,0 +1,18 @@
+{
+  "title": "A dispatch input named permissions does not set token scopes",
+  "workflow": [
+    "on:",
+    "  workflow_dispatch:",
+    "    inputs:",
+    "      permissions: {type: string, default: read-all}",
+    "jobs: {inspect: {}}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT"]
+    }
+  },
+  "exit_code": 0
+}
