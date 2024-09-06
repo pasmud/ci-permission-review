@@ -1,0 +1,22 @@
+{
+  "title": "A single job opts into read under a workflow deny-all",
+  "workflow": [
+    "permissions: {}",
+    "jobs:",
+    "  format: {}",
+    "  inspect: {permissions: {checks: read}}"
+  ],
+  "expected": {
+    "format": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "inspect": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
