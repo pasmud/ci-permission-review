@@ -1,0 +1,19 @@
+{
+  "title": "A step's permissions input is not a token declaration",
+  "workflow": [
+    "jobs:",
+    "  inspect:",
+    "    permissions: {contents: read}",
+    "    steps:",
+    "      - uses: sample-org/sample-inspector@v1",
+    "        with: {permissions: read-all}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
