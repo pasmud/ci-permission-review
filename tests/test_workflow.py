@@ -48,6 +48,8 @@ def test_cli_reports_inherited_write_all_but_not_an_override(tmp_path):
         check=True,
     )
     assert result.stdout.splitlines() == [
-        f"{str(workflow)!r}: sample: WRITE_ALL: Declares write-all."
+        f"{str(workflow)!r}: narrowed: permissions (job): {{}} (unlisted scopes: none)",
+        f"{str(workflow)!r}: sample: permissions (workflow): write-all",
+        f"{str(workflow)!r}: sample: WRITE_ALL: Uses write-all.",
     ]
     assert not result.stderr

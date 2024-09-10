@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 
+from .permissions import Permissions, resolve_permissions
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -10,10 +12,18 @@ class Finding:
     message: str
 
 
-def review_workflow(workflow: dict) -> tuple[Finding, ...]:
-    findings = []
-    for job_id, job in sorted(workflow["jobs"].items()):
-        permissions = job.get("permissions", workflow.get("permissions"))
-        if permissions == "write-all":
-            findings.append(Finding(job_id, "WRITE_ALL", "Declares write-all."))
-    return tuple(findings)
+@dataclass(frozen=True)
+class JobReview:
+    job_id: str
+    permissions: Permissions
+    findings: tuple[Finding, ...]
+
+
+def review_workflow(workflow: dict) -> tuple[JobReview, ...]:
+    results = []
+    for job_id, permissions in resolve_permissions(workflow).items():
+        findings = ()
+        if permissions.mode == "write-all":
+            findings = (Finding(job_id, "WRITE_ALL", "Uses write-all."),)
+        results.append(JobReview(job_id, permissions, findings))
+    return tuple(results)

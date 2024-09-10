@@ -25,7 +25,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"{str(path)!r}: {exc}", file=sys.stderr)
             return 2
 
-    for path, findings in results:
-        for finding in findings:
-            print(f"{str(path)!r}: {finding.job_id}: {finding.code}: {finding.message}")
+    for path, jobs in results:
+        for job in jobs:
+            prefix = f"{str(path)!r}: {job.job_id}:"
+            print(
+                f"{prefix} permissions ({job.permissions.source}): {job.permissions.describe()}"
+            )
+            for finding in job.findings:
+                print(f"{prefix} {finding.code}: {finding.message}")
     return 0
