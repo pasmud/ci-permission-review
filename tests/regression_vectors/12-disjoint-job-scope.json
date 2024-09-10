@@ -1,0 +1,18 @@
+{
+  "title": "A disjoint job map replaces rather than adds workflow reads",
+  "workflow": [
+    "permissions: {contents: read, actions: read}",
+    "jobs:",
+    "  inspect_discussion:",
+    "    permissions:",
+    "      discussions: read"
+  ],
+  "expected": {
+    "inspect_discussion": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"discussions": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
