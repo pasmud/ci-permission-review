@@ -1,0 +1,22 @@
+{
+  "title": "Job read-all removes the finding from a broad workflow map",
+  "workflow": [
+    "permissions: {statuses: write, checks: write, issues: write}",
+    "jobs:",
+    "  inspect: {permissions: read-all}",
+    "  report: {}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "report": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {"checks": "write", "issues": "write", "statuses": "write"}},
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "issues", "statuses"]}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
