@@ -1,0 +1,22 @@
+{
+  "title": "A named read replaces write-all only for the declaring job",
+  "workflow": [
+    "permissions: write-all",
+    "jobs:",
+    "  inspect: {permissions: {packages: read}}",
+    "  inherited: {}"
+  ],
+  "expected": {
+    "inherited": {
+      "permissions": {"source": "workflow", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    },
+    "inspect": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"packages": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
