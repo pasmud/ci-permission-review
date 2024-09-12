@@ -1,0 +1,16 @@
+{
+  "title": "Job deny-all clears every scope in a broad workflow map",
+  "workflow": [
+    "permissions: {checks: write, contents: read, issues: write, statuses: write}",
+    "jobs:",
+    "  format: {permissions: {}}"
+  ],
+  "expected": {
+    "format": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
