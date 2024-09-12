@@ -7,7 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Sequence
 
-from .review import JobReview, review_workflow
+from .review import SEVERITY_RANK, JobReview, review_workflow
 from .workflow import WorkflowError, read_workflow
 
 Reports = list[tuple[str, tuple[JobReview, ...]]]
@@ -55,16 +55,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="output format (default: text)",
     )
     parser.add_argument(
+        "--min-severity",
+        choices=tuple(SEVERITY_RANK),
+        help="only report findings at this severity or higher (default: all)",
+    )
+    parser.add_argument(
         "--fail-on-findings",
         action="store_true",
-        help="return 1 if any job has a finding",
+        help="return 1 if any finding is reported",
     )
     args = parser.parse_args(argv)
 
     reports: Reports = []
     for path in args.paths:
         try:
-            jobs = review_workflow(read_workflow(Path(path)), include_notes=args.notes)
+            jobs = review_workflow(
+                read_workflow(Path(path)),
+                include_notes=args.notes,
+                min_severity=args.min_severity,
+            )
             reports.append((path, jobs))
         except WorkflowError as exc:
             print(f"{path!r}: {exc}", file=sys.stderr)

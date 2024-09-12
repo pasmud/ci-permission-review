@@ -82,6 +82,59 @@ def test_policy_exit_counts_findings_not_notes(tmp_path, permissions, exit_code)
     assert not result.stderr
 
 
+def test_severity_threshold_filters_text_and_policy_but_keeps_context(tmp_path):
+    path = tmp_path / "fake.yml"
+    path.write_text(
+        "permissions: {issues: write, contents: write, checks: write}\n"
+        "jobs: {caller: {uses: ./fake.yml}}",
+        encoding="utf-8",
+    )
+    args = ("--fail-on-findings", "--notes", path)
+    baseline = run_cli(*args)
+    assert baseline.returncode == 1
+    assert "BROAD_WRITE" in baseline.stdout
+    medium = run_cli("--min-severity", "medium", *args)
+    assert medium.returncode == 1
+    assert medium.stdout == baseline.stdout
+    assert not medium.stderr
+
+    high = run_cli("--min-severity", "high", *args)
+    assert high.returncode == 0
+    assert "BROAD_WRITE" not in high.stdout
+    assert "caller: permissions (workflow):" in high.stdout
+    assert "caller: note REUSABLE_WORKFLOW:" in high.stdout
+    assert not high.stderr
+
+
+@pytest.mark.parametrize("severity", ["medium", "high"])
+def test_severity_filtered_json_is_independent_of_mapping_order(tmp_path, severity):
+    path = tmp_path / "fake.yml"
+    args = ("--format", "json", "--min-severity", severity, "--fail-on-findings", path)
+    path.write_text(
+        "jobs: {z: {permissions: write-all}, "
+        "a: {permissions: {issues: write, checks: write, contents: write}}}",
+        encoding="utf-8",
+    )
+    first = run_cli(*args)
+    path.write_text(
+        "jobs: {a: {permissions: {contents: write, checks: write, issues: write}}, "
+        "z: {permissions: write-all}}",
+        encoding="utf-8",
+    )
+    second = run_cli(*args)
+    assert first.returncode == second.returncode == 1
+    assert not first.stderr and not second.stderr
+    assert first.stdout == second.stdout
+    report = json.loads(first.stdout)
+    assert report["schema_version"] == 1
+    broad, all_writes = report["workflows"][0]["jobs"]
+    assert [broad["job_id"], all_writes["job_id"]] == ["a", "z"]
+    assert [item["code"] for item in broad["findings"]] == (
+        ["BROAD_WRITE"] if severity == "medium" else []
+    )
+    assert [item["code"] for item in all_writes["findings"]] == ["WRITE_ALL"]
+
+
 @pytest.mark.parametrize(
     ("content", "message"),
     [

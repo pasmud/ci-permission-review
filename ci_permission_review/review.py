@@ -1,10 +1,14 @@
 """Review declared permissions without executing workflow content."""
 
 from dataclasses import dataclass
+from typing import Literal
 
 from .permissions import Permissions, resolve_permissions
 
 MIN_BROAD_WRITES = 3
+Severity = Literal["medium", "high"]
+SEVERITY_RANK = {"medium": 1, "high": 2}
+FINDING_SEVERITY: dict[str, Severity] = {"BROAD_WRITE": "medium", "WRITE_ALL": "high"}
 
 
 @dataclass(frozen=True)
@@ -84,7 +88,7 @@ def _context_notes(
 
 
 def review_workflow(
-    workflow: dict, *, include_notes: bool = False
+    workflow: dict, *, include_notes: bool = False, min_severity: Severity | None = None
 ) -> tuple[JobReview, ...]:
     results = []
     accepts_calls = include_notes and _has_workflow_call(workflow)
@@ -99,5 +103,13 @@ def review_workflow(
             if include_notes
             else ()
         )
-        results.append(JobReview(job_id, permissions, _findings(permissions), notes))
+        findings = _findings(permissions)
+        if min_severity is not None:
+            findings = tuple(
+                finding
+                for finding in findings
+                if SEVERITY_RANK[FINDING_SEVERITY[finding.code]]
+                >= SEVERITY_RANK[min_severity]
+            )
+        results.append(JobReview(job_id, permissions, findings, notes))
     return tuple(results)
