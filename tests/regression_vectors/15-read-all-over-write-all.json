@@ -1,0 +1,16 @@
+{
+  "title": "Overridden workflow write-all does not trip the gate",
+  "workflow": [
+    "permissions: write-all",
+    "jobs:",
+    "  inspect: {permissions: read-all}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
