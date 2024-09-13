@@ -1,0 +1,22 @@
+{
+  "title": "A named denial stays visible beside an empty job map",
+  "workflow": [
+    "permissions: {contents: read}",
+    "jobs:",
+    "  deny_named: {permissions: {contents: none}}",
+    "  deny_all: {permissions: {}}"
+  ],
+  "expected": {
+    "deny_all": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "deny_named": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "none"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
