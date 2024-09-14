@@ -1,0 +1,34 @@
+{
+  "title": "Case and punctuation in job IDs preserve finding location",
+  "workflow": [
+    "permissions: {contents: read}",
+    "jobs:",
+    "  report-v2: {permissions: {checks: read}}",
+    "  _prepare: {permissions: {}}",
+    "  Report: {permissions: write-all}",
+    "  report: {}"
+  ],
+  "expected": {
+    "Report": {
+      "permissions": {"source": "job", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    },
+    "_prepare": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "report": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {"contents": "read"}},
+      "findings": [],
+      "notes": []
+    },
+    "report-v2": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
