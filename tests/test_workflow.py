@@ -22,6 +22,8 @@ def test_preserves_on_and_limits_boolean_resolution_to_true_and_false():
     [
         ("jobs: {build: {}}\njobs: {review: {}}", "duplicate mapping key"),
         ("jobs: {build: !!python/name:builtins.object ''}", "unsupported YAML"),
+        ("jobs: {build: {name: !!bool fake}}", "explicit YAML tags"),
+        ("jobs: {build: {<<: {name: fake}}}", "YAML merge keys"),
         ("jobs: {build: {}}\n---\njobs: {other: {}}", "unsupported YAML"),
         ("jobs: {build: [}", "line 1"),
         ("[]", "workflow mapping"),
