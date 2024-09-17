@@ -1,0 +1,29 @@
+# Synthetic input for offline review. These jobs are not intended to run.
+name: Synthetic permission declarations
+on: push
+permissions:
+  issues: write
+  checks: write
+  statuses: write
+jobs:
+  sample_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Synthetic example
+        run: 'true'
+  sample_read:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Synthetic example
+        run: 'true'
+  sample_call:
+    permissions: {}
+    uses: fake-org/fake-repo/.github/workflows/fake-check.yml@fake-ref
+  sample_all:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Synthetic example
+        run: 'true'

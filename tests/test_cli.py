@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -110,3 +111,31 @@ def test_missing_arguments_are_a_usage_error():
     assert result.returncode == 2
     assert not result.stdout
     assert "usage: ci-permission-review" in result.stderr
+
+
+def test_documented_fixtures_have_expected_policy_results():
+    examples = Path(__file__).resolve().parents[1] / "examples"
+    defaults = run_cli("--fail-on-findings", examples / "fake-defaults.yml")
+    assert defaults.returncode == 0
+    assert "sample_default: permissions (platform-default):" in defaults.stdout
+    assert "sample_empty: permissions (job): {}" in defaults.stdout
+
+    flags = run_cli(
+        "--format",
+        "json",
+        "--notes",
+        "--fail-on-findings",
+        examples / "fake-review.yml",
+    )
+    assert flags.returncode == 1
+    assert not flags.stderr
+    (report,) = json.loads(flags.stdout)["workflows"]
+    assert {
+        job["job_id"]: [finding["code"] for finding in job["findings"]]
+        for job in report["jobs"]
+    } == {
+        "sample_all": ["WRITE_ALL"],
+        "sample_call": [],
+        "sample_read": [],
+        "sample_report": ["BROAD_WRITE"],
+    }

@@ -1,0 +1,15 @@
+# Synthetic input for offline review. These jobs are not intended to run.
+name: Synthetic defaults and narrowed permissions
+on: pull_request
+jobs:
+  sample_default:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Synthetic example
+        run: 'true'
+  sample_empty:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Synthetic example
+        run: 'true'
