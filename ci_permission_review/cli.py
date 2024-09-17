@@ -15,12 +15,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         description="Review declared GitHub Actions permissions in local YAML files.",
     )
     parser.add_argument("paths", metavar="WORKFLOW", nargs="+", type=Path)
+    parser.add_argument(
+        "--notes", action="store_true", help="include reusable-job evidence"
+    )
     args = parser.parse_args(argv)
 
     results = []
     for path in args.paths:
         try:
-            results.append((path, review_workflow(read_workflow(path))))
+            jobs = review_workflow(read_workflow(path), include_notes=args.notes)
+            results.append((path, jobs))
         except WorkflowError as exc:
             print(f"{str(path)!r}: {exc}", file=sys.stderr)
             return 2
@@ -33,4 +37,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             for finding in job.findings:
                 print(f"{prefix} {finding.code}: {finding.message}")
+            for note in job.notes:
+                print(f"{prefix} note {note.code}: {note.message}")
     return 0
