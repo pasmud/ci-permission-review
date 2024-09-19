@@ -1,0 +1,27 @@
+{
+  "title": "An aliased job map remains local to jobs that declare it",
+  "workflow": [
+    "jobs:",
+    "  inspect: {permissions: &read_scopes {issues: read, contents: read}}",
+    "  summarize: {permissions: *read_scopes}",
+    "  prepare: {}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read", "issues": "read"}},
+      "findings": [],
+      "notes": []
+    },
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT"]
+    },
+    "summarize": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read", "issues": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
