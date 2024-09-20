@@ -1,0 +1,22 @@
+{
+  "title": "Approved issue triage has one write despite four named scopes",
+  "workflow": [
+    "on: issues",
+    "jobs:",
+    "  triage:",
+    "    # Assume issue labeling is approved; checks and packages stay denied.",
+    "    permissions: {issues: write, packages: none, contents: read, checks: none}"
+  ],
+  "expected": {
+    "triage": {
+      "permissions": {
+        "source": "job",
+        "mode": "explicit",
+        "scopes": {"checks": "none", "contents": "read", "issues": "write", "packages": "none"}
+      },
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
