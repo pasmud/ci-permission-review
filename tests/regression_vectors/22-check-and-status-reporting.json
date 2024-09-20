@@ -1,0 +1,19 @@
+{
+  "title": "Two approved reporting writes stay below the broad threshold",
+  "workflow": [
+    "on: push",
+    "permissions: {}",
+    "jobs:",
+    "  report_checks:",
+    "    # Assume the local policy permits publishing checks and commit statuses.",
+    "    permissions: {statuses: write, checks: write}"
+  ],
+  "expected": {
+    "report_checks": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "write", "statuses": "write"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
