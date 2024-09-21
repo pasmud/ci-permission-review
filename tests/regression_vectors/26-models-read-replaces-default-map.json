@@ -1,0 +1,16 @@
+{
+  "title": "A models-only job does not inherit an identity grant",
+  "workflow": [
+    "permissions: {id-token: write}",
+    "jobs:",
+    "  evaluate: {permissions: {models: read}}"
+  ],
+  "expected": {
+    "evaluate": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"models": "read"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
