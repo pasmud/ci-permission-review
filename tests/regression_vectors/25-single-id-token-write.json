@@ -1,0 +1,18 @@
+{
+  "title": "An approved OIDC job keeps id-token as its sole grant",
+  "workflow": [
+    "on: workflow_dispatch",
+    "jobs:",
+    "  request_identity:",
+    "    # Assume the local policy authorizes requesting a federated identity.",
+    "    permissions: {id-token: write}"
+  ],
+  "expected": {
+    "request_identity": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"id-token": "write"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
