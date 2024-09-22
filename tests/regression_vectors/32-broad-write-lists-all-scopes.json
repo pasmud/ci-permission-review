@@ -1,0 +1,37 @@
+{
+  "title": "A broad finding lists all five writes and excludes non-writes",
+  "workflow": [
+    "jobs:",
+    "  report:",
+    "    permissions:",
+    "      security-events: write",
+    "      statuses: write",
+    "      contents: read",
+    "      discussions: none",
+    "      pull-requests: write",
+    "      issues: write",
+    "      checks: write"
+  ],
+  "expected": {
+    "report": {
+      "permissions": {
+        "source": "job",
+        "mode": "explicit",
+        "scopes": {
+          "checks": "write",
+          "contents": "read",
+          "discussions": "none",
+          "issues": "write",
+          "pull-requests": "write",
+          "security-events": "write",
+          "statuses": "write"
+        }
+      },
+      "findings": [
+        {"code": "BROAD_WRITE", "scopes": ["checks", "issues", "pull-requests", "security-events", "statuses"]}
+      ],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
