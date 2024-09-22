@@ -1,0 +1,22 @@
+{
+  "title": "A job write-all finding leaves its sibling's default unknown",
+  "workflow": [
+    "on: push",
+    "jobs:",
+    "  publish: {permissions: write-all}",
+    "  prepare: {}"
+  ],
+  "expected": {
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT"]
+    },
+    "publish": {
+      "permissions": {"source": "job", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
