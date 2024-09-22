@@ -1,0 +1,30 @@
+{
+  "title": "Replacing a broad map replaces the finding's scope list",
+  "workflow": [
+    "permissions: {issues: write, pull-requests: write, checks: write}",
+    "jobs:",
+    "  triage: {}",
+    "  publish: {permissions: {pages: write, deployments: write, packages: write}}"
+  ],
+  "expected": {
+    "publish": {
+      "permissions": {
+        "source": "job",
+        "mode": "explicit",
+        "scopes": {"deployments": "write", "packages": "write", "pages": "write"}
+      },
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["deployments", "packages", "pages"]}],
+      "notes": []
+    },
+    "triage": {
+      "permissions": {
+        "source": "workflow",
+        "mode": "explicit",
+        "scopes": {"checks": "write", "issues": "write", "pull-requests": "write"}
+      },
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "issues", "pull-requests"]}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
