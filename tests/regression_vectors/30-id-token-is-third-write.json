@@ -1,0 +1,21 @@
+{
+  "title": "An id-token grant can be the third write in a finding",
+  "workflow": [
+    "on: workflow_dispatch",
+    "jobs:",
+    "  publish:",
+    "    permissions: {packages: write, id-token: write, contents: read, attestations: write}"
+  ],
+  "expected": {
+    "publish": {
+      "permissions": {
+        "source": "job",
+        "mode": "explicit",
+        "scopes": {"attestations": "write", "contents": "read", "id-token": "write", "packages": "write"}
+      },
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["attestations", "id-token", "packages"]}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
