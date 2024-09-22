@@ -1,0 +1,33 @@
+{
+  "title": "Extra reads do not make two approved Pages writes broad",
+  "workflow": [
+    "on: workflow_dispatch",
+    "jobs:",
+    "  publish_docs:",
+    "    # Assume Pages publishing and deployment records are approved.",
+    "    permissions:",
+    "      pages: write",
+    "      deployments: write",
+    "      contents: read",
+    "      artifact-metadata: read",
+    "      actions: read"
+  ],
+  "expected": {
+    "publish_docs": {
+      "permissions": {
+        "source": "job",
+        "mode": "explicit",
+        "scopes": {
+          "actions": "read",
+          "artifact-metadata": "read",
+          "contents": "read",
+          "deployments": "write",
+          "pages": "write"
+        }
+      },
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
