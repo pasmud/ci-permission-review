@@ -1,0 +1,22 @@
+{
+  "title": "Approved writes are counted per job, not across the workflow",
+  "workflow": [
+    "permissions: {}",
+    "jobs:",
+    "  report: {permissions: {checks: write, statuses: write}}",
+    "  triage: {permissions: {issues: write, pull-requests: write}}"
+  ],
+  "expected": {
+    "report": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "write", "statuses": "write"}},
+      "findings": [],
+      "notes": []
+    },
+    "triage": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"issues": "write", "pull-requests": "write"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
