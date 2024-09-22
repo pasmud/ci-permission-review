@@ -1,0 +1,16 @@
+{
+  "title": "Both special scopes retain explicit none declarations",
+  "workflow": [
+    "permissions: {models: read, id-token: write}",
+    "jobs:",
+    "  render: {permissions: {models: none, id-token: none, contents: read}}"
+  ],
+  "expected": {
+    "render": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read", "id-token": "none", "models": "none"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
