@@ -1,0 +1,30 @@
+{
+  "title": "Three inherited writes are reported in sorted scope order",
+  "workflow": [
+    "permissions:",
+    "  statuses: write",
+    "  contents: read",
+    "  checks: write",
+    "  packages: none",
+    "  deployments: write",
+    "jobs: {report: {}}"
+  ],
+  "expected": {
+    "report": {
+      "permissions": {
+        "source": "workflow",
+        "mode": "explicit",
+        "scopes": {
+          "checks": "write",
+          "contents": "read",
+          "deployments": "write",
+          "packages": "none",
+          "statuses": "write"
+        }
+      },
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "deployments", "statuses"]}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
