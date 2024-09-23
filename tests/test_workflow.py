@@ -17,6 +17,34 @@ def test_preserves_on_and_limits_boolean_resolution_to_true_and_false():
     assert yaml.safe_load("on: value") == {True: "value"}
 
 
+def test_non_recursive_aliases_still_supply_permission_declarations():
+    workflow = load_workflow("""
+        jobs:
+          first: {permissions: &scopes {contents: read}}
+          second: {permissions: *scopes}
+          third: {permissions: *scopes}
+    """)
+    assert [job["permissions"] for job in workflow["jobs"].values()] == [
+        {"contents": "read"},
+        {"contents": "read"},
+        {"contents": "read"},
+    ]
+
+
+@pytest.mark.parametrize(
+    ("job", "column"),
+    [("&sample {defaults: *sample}", 30), ("{steps: &items [{with: *items}]}", 34)],
+)
+def test_recursive_alias_is_rejected_at_its_use_site(job, column):
+    source = f"jobs:\n  sample: {job}\n"
+    with pytest.raises(WorkflowError) as exc:
+        load_workflow(source)
+    assert str(exc.value) == (
+        f"invalid or unsupported YAML at line 2, column {column} "
+        "(recursive YAML aliases are not supported)"
+    )
+
+
 @pytest.mark.parametrize(
     ("source", "message"),
     [

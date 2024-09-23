@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 from yaml.composer import ComposerError
 from yaml.constructor import ConstructorError
+from yaml.events import AliasEvent
 from yaml.nodes import MappingNode, Node, ScalarNode
 
 MAX_WORKFLOW_BYTES = 1024 * 1024
@@ -13,6 +14,7 @@ BOOL_TAG = "tag:yaml.org,2002:bool"
 MERGE_TAG = "tag:yaml.org,2002:merge"
 JOB_ID = re.compile(r"[a-zA-Z_][a-zA-Z0-9_-]*\Z")
 EXPLICIT_TAG_ERROR = "explicit YAML tags are not supported"
+RECURSIVE_ALIAS_ERROR = "recursive YAML aliases are not supported"
 
 
 class WorkflowError(ValueError):
@@ -26,11 +28,27 @@ class WorkflowLoader(yaml.SafeLoader):
         for initial, resolvers in yaml.SafeLoader.yaml_implicit_resolvers.items()
     }
 
+    def __init__(self, stream: str) -> None:
+        super().__init__(stream)
+        self._active_anchors: list[str] = []
+
     def compose_node(self, parent: Node | None, index: Node | int | None) -> Node:
         event = self.peek_event()
         if getattr(event, "tag", None) is not None:
             raise ComposerError(None, None, EXPLICIT_TAG_ERROR, event.start_mark)
-        return super().compose_node(parent, index)
+        if isinstance(event, AliasEvent):
+            if event.anchor in self._active_anchors:
+                raise ComposerError(None, None, RECURSIVE_ALIAS_ERROR, event.start_mark)
+            return super().compose_node(parent, index)
+        anchor = getattr(event, "anchor", None)
+        if anchor is None:
+            return super().compose_node(parent, index)
+        # An alias back to a node still being composed would create a cycle.
+        self._active_anchors.append(anchor)
+        try:
+            return super().compose_node(parent, index)
+        finally:
+            self._active_anchors.pop()
 
     def construct_mapping(self, node: MappingNode, deep: bool = False) -> dict:
         if not isinstance(node, MappingNode):
@@ -73,6 +91,7 @@ def load_workflow(source: str) -> dict:
         location = f" at line {mark.line + 1}, column {mark.column + 1}" if mark else ""
         safe_problems = {
             EXPLICIT_TAG_ERROR,
+            RECURSIVE_ALIAS_ERROR,
             "duplicate mapping key",
             "mapping keys must be scalars",
             "YAML merge keys are not supported",

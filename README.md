@@ -55,7 +55,7 @@ ci-permission-review [--format {text,json}] [--notes] [--min-severity {medium,hi
 | `1` | Review completed and `--fail-on-findings` was set with at least one reported finding after severity filtering. The report is still printed. Notes do not count. |
 | `2` | Usage or input error. The first invalid input is reported to stderr, with no partial report on stdout. |
 
-The YAML reader preserves the `on` key and rejects duplicate keys, merge keys, and explicit tags. Permissions must use recognized scope names and valid levels; typos or newer scopes outside the built-in list are input errors. The tool validates the YAML and the fields it reviews, not the full workflow schema. It does not account for runtime restrictions such as fork policy or determine whether a step actually needs a permission.
+The YAML reader preserves the `on` key and rejects duplicate keys, merge keys, explicit tags, and recursive aliases, including in fields outside the permission review. Non-recursive anchors and aliases are accepted. Permissions must use recognized scope names and valid levels; typos or newer scopes outside the built-in list are input errors. The tool validates the YAML and the fields it reviews, not the full workflow schema. It does not account for runtime restrictions such as fork policy or determine whether a step actually needs a permission.
 
 ## Development
 

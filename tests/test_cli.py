@@ -143,8 +143,9 @@ def test_severity_filtered_json_is_independent_of_mapping_order(tmp_path, severi
         (b" " * (1024 * 1024 + 1), "1 MiB input limit"),
         (b"jobs: {sample: {permissions: null}}", "job 'sample' permissions:"),
         (b"jobs:\n  sample: [fake-value", "invalid or unsupported YAML"),
+        (b"jobs: {sample: &fake-value {env: *fake-value}}", "recursive YAML aliases"),
     ],
-    ids=["missing", "encoding", "size", "permissions", "yaml"],
+    ids=["missing", "encoding", "size", "permissions", "yaml", "recursive-alias"],
 )
 def test_input_error_has_priority_and_keeps_stdout_empty(tmp_path, content, message):
     valid = tmp_path / "fake-valid.yml"
