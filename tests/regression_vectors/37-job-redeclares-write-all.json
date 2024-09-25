@@ -1,0 +1,22 @@
+{
+  "title": "Write-all findings retain both job and workflow sources",
+  "workflow": [
+    "permissions: write-all",
+    "jobs:",
+    "  explicit: {permissions: \"write-all\"}",
+    "  inherited: {}"
+  ],
+  "expected": {
+    "explicit": {
+      "permissions": {"source": "job", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    },
+    "inherited": {
+      "permissions": {"source": "workflow", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
