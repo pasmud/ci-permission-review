@@ -1,0 +1,22 @@
+{
+  "title": "A job's sole write does not sum with two replaced writes",
+  "workflow": [
+    "permissions: {checks: write, statuses: write}",
+    "jobs:",
+    "  report: {}",
+    "  triage: {permissions: {issues: write}}"
+  ],
+  "expected": {
+    "report": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {"checks": "write", "statuses": "write"}},
+      "findings": [],
+      "notes": []
+    },
+    "triage": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"issues": "write"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
