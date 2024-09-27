@@ -1,0 +1,21 @@
+{
+  "title": "A callable workflow leaves caller and platform defaults unknown",
+  "workflow": [
+    "on:",
+    "  workflow_call:",
+    "    inputs:",
+    "      report-name: {type: string, required: false}",
+    "jobs: {prepare: {}}"
+  ],
+  "expected": {
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT", "CALLER_CONTEXT"]
+    }
+  },
+  "note_contains": {
+    "prepare": {"CALLER_CONTEXT": ["caller's permission ceiling is unknown"]}
+  },
+  "exit_code": 0
+}
