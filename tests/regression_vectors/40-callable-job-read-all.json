@@ -1,0 +1,22 @@
+{
+  "title": "An explicit read-all in a callable job still has an unknown cap",
+  "workflow": [
+    "on: [workflow_call, push]",
+    "jobs:",
+    "  inspect: {permissions: read-all}",
+    "  prepare: {}"
+  ],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": ["CALLER_CONTEXT"]
+    },
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT", "CALLER_CONTEXT"]
+    }
+  },
+  "exit_code": 0
+}
