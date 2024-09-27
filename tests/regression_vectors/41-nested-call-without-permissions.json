@@ -1,0 +1,20 @@
+{
+  "title": "A nested call without grants reports all three unknowns",
+  "workflow": [
+    "on: workflow_call",
+    "jobs:",
+    "  relay-report:",
+    "    uses: ./.github/workflows/sample-absent.yml"
+  ],
+  "expected": {
+    "relay-report": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT", "CALLER_CONTEXT", "REUSABLE_WORKFLOW"]
+    }
+  },
+  "note_contains": {
+    "relay-report": {"REUSABLE_WORKFLOW": ["jobs.relay-report.uses", "callee's permissions are unknown"]}
+  },
+  "exit_code": 0
+}
