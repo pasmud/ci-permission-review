@@ -1,0 +1,20 @@
+{
+  "title": "A push-only caller keeps read-all and reports callee context",
+  "workflow": [
+    "on: push",
+    "permissions: read-all",
+    "jobs:",
+    "  delegate: {uses: ./.github/workflows/sample-summary.yml}"
+  ],
+  "expected": {
+    "delegate": {
+      "permissions": {"source": "workflow", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": ["REUSABLE_WORKFLOW"]
+    }
+  },
+  "note_contains": {
+    "delegate": {"REUSABLE_WORKFLOW": ["jobs.delegate.uses", "only the caller's declaration was reviewed"]}
+  },
+  "exit_code": 0
+}
