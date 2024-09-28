@@ -1,0 +1,19 @@
+{
+  "title": "Nested call deny-all leaves caller and callee context unknown",
+  "workflow": [
+    "on: {workflow_call: null}",
+    "permissions: {contents: read}",
+    "jobs:",
+    "  relay:",
+    "    uses: ./.github/workflows/sample-reporter.yml",
+    "    permissions: {}"
+  ],
+  "expected": {
+    "relay": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": ["CALLER_CONTEXT", "REUSABLE_WORKFLOW"]
+    }
+  },
+  "exit_code": 0
+}
