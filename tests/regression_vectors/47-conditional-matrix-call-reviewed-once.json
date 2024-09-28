@@ -1,0 +1,22 @@
+{
+  "title": "A conditional matrix call is reviewed once by its YAML job ID",
+  "workflow": [
+    "on: push",
+    "jobs:",
+    "  summarize:",
+    "    if: ${{ false }}",
+    "    strategy:",
+    "      matrix: {target: [docs, lint]}",
+    "    uses: ./.github/workflows/sample-summary.yml",
+    "    with: {target: '${{ matrix.target }}'}",
+    "    permissions: {checks: read}"
+  ],
+  "expected": {
+    "summarize": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "read"}},
+      "findings": [],
+      "notes": ["REUSABLE_WORKFLOW"]
+    }
+  },
+  "exit_code": 0
+}
