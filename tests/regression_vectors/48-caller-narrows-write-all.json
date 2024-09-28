@@ -1,0 +1,22 @@
+{
+  "title": "A reusable caller can narrow inherited write-all to read",
+  "workflow": [
+    "permissions: write-all",
+    "jobs:",
+    "  delegate: {uses: ./.github/workflows/sample-summary.yml, permissions: {contents: read}}",
+    "  publish: {}"
+  ],
+  "expected": {
+    "delegate": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"contents": "read"}},
+      "findings": [],
+      "notes": ["REUSABLE_WORKFLOW"]
+    },
+    "publish": {
+      "permissions": {"source": "workflow", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
