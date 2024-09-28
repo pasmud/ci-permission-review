@@ -1,0 +1,20 @@
+{
+  "title": "An unknown caller ceiling does not erase a broad declaration",
+  "workflow": [
+    "on: workflow_call",
+    "permissions: {checks: write, contents: read, statuses: write, issues: write}",
+    "jobs: {report: {}}"
+  ],
+  "expected": {
+    "report": {
+      "permissions": {
+        "source": "workflow",
+        "mode": "explicit",
+        "scopes": {"checks": "write", "contents": "read", "issues": "write", "statuses": "write"}
+      },
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "issues", "statuses"]}],
+      "notes": ["CALLER_CONTEXT"]
+    }
+  },
+  "exit_code": 1
+}
