@@ -1,0 +1,23 @@
+{
+  "title": "High-only gating hides broad writes but keeps unknown context",
+  "workflow": [
+    "on: workflow_call",
+    "jobs:",
+    "  report: {permissions: {issues: write, checks: write, statuses: write}}",
+    "  prepare: {}"
+  ],
+  "options": ["--notes", "--min-severity", "high", "--fail-on-findings"],
+  "expected": {
+    "prepare": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": ["PLATFORM_DEFAULT", "CALLER_CONTEXT"]
+    },
+    "report": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "write", "issues": "write", "statuses": "write"}},
+      "findings": [],
+      "notes": ["CALLER_CONTEXT"]
+    }
+  },
+  "exit_code": 0
+}
