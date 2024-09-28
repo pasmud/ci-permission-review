@@ -1,0 +1,23 @@
+{
+  "title": "Whitespace-only job uses does not add a reusable note",
+  "workflow": [
+    "on: push",
+    "permissions: {}",
+    "jobs:",
+    "  placeholder: {uses: '   '}",
+    "  delegate: {uses: ./.github/workflows/sample-format.yml}"
+  ],
+  "expected": {
+    "delegate": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": ["REUSABLE_WORKFLOW"]
+    },
+    "placeholder": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
