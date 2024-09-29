@@ -1,0 +1,29 @@
+{
+  "title": "High-only gating retains the inherited write-all finding",
+  "workflow": [
+    "permissions: write-all",
+    "jobs:",
+    "  publish: {}",
+    "  report: {permissions: {checks: write, issues: write, statuses: write}}",
+    "  inspect: {permissions: read-all}"
+  ],
+  "options": ["--min-severity", "high", "--fail-on-findings"],
+  "expected": {
+    "inspect": {
+      "permissions": {"source": "job", "mode": "read-all", "scopes": {}},
+      "findings": [],
+      "notes": []
+    },
+    "publish": {
+      "permissions": {"source": "workflow", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    },
+    "report": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "write", "issues": "write", "statuses": "write"}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
