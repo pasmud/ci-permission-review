@@ -1,0 +1,23 @@
+{
+  "title": "Medium gating includes inherited broad and job write-all",
+  "workflow": [
+    "permissions: {issues: write, checks: write, statuses: write}",
+    "jobs:",
+    "  report: {uses: ./.github/workflows/sample-reporter.yml}",
+    "  publish: {permissions: write-all}"
+  ],
+  "options": ["--notes", "--min-severity", "medium", "--fail-on-findings"],
+  "expected": {
+    "publish": {
+      "permissions": {"source": "job", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": []
+    },
+    "report": {
+      "permissions": {"source": "workflow", "mode": "explicit", "scopes": {"checks": "write", "issues": "write", "statuses": "write"}},
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "issues", "statuses"]}],
+      "notes": ["REUSABLE_WORKFLOW"]
+    }
+  },
+  "exit_code": 1
+}
