@@ -1,0 +1,19 @@
+{
+  "title": "Turning notes off leaves a nested caller's broad finding intact",
+  "workflow": [
+    "on: workflow_call",
+    "jobs:",
+    "  relay:",
+    "    uses: ./.github/workflows/sample-reporter.yml",
+    "    permissions: {pull-requests: write, issues: write, checks: write}"
+  ],
+  "options": ["--fail-on-findings"],
+  "expected": {
+    "relay": {
+      "permissions": {"source": "job", "mode": "explicit", "scopes": {"checks": "write", "issues": "write", "pull-requests": "write"}},
+      "findings": [{"code": "BROAD_WRITE", "scopes": ["checks", "issues", "pull-requests"]}],
+      "notes": []
+    }
+  },
+  "exit_code": 1
+}
