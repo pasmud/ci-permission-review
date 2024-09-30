@@ -1,0 +1,17 @@
+{
+  "title": "Turning notes off leaves an unknown default unchanged",
+  "workflow": [
+    "on: workflow_call",
+    "jobs:",
+    "  relay: {uses: ./.github/workflows/sample-review.yml}"
+  ],
+  "options": ["--fail-on-findings"],
+  "expected": {
+    "relay": {
+      "permissions": {"source": "platform-default", "mode": "default", "scopes": {}},
+      "findings": [],
+      "notes": []
+    }
+  },
+  "exit_code": 0
+}
