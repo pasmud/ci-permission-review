@@ -1,0 +1,17 @@
+{
+  "title": "Advisory mode reports write-all without a gate failure",
+  "workflow": [
+    "on: workflow_dispatch",
+    "jobs:",
+    "  delegate: {uses: ./.github/workflows/sample-publisher.yml, permissions: write-all}"
+  ],
+  "options": ["--notes"],
+  "expected": {
+    "delegate": {
+      "permissions": {"source": "job", "mode": "write-all", "scopes": {}},
+      "findings": [{"code": "WRITE_ALL", "scopes": []}],
+      "notes": ["REUSABLE_WORKFLOW"]
+    }
+  },
+  "exit_code": 0
+}
